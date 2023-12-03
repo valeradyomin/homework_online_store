@@ -1,0 +1,26 @@
+{% extends 'catalog/base.html' %}
+
+{% load my_tags %}
+{%block title%} title {%endblock%}
+
+{%block content%}
+<div class="card mb-3" style="max-width: 100%;">
+  <div class="row g-0">
+    <div class="col-md-4">
+<!--      <img src="/media/{{ object.image }}" class="img-fluid rounded-start" alt="...">-->
+<!--      <img src="{{ object.image | media_path }}" class="img-fluid rounded-start" alt="...">-->
+      <img src="{% media_tag object.image %}" class="img-fluid rounded-start" alt="Image">
+
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h2 class="card-title">{{ object.name | title }}</h2>
+        <p class="card-text">{{ object.description }}</p>
+        <p class="card-text"><small class="text-body-secondary">дата публикации: {{ object.time_create }}</small></p>
+        <h4 class="my-0 font-weight-normal">Цена {{ object.price }} руб.</h4><br>
+        <a href="#" class="btn btn-primary">купить</a>
+      </div>
+    </div>
+  </div>
+</div>
+{%endblock%}
