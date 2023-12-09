@@ -16,6 +16,11 @@ class BlogpostCreateView(CreateView):
 class BlogpostListView(ListView):
     model = Blogpost
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_published=True)
+        return queryset
+
 
 class BlogpostDetailView(DetailView):
     model = Blogpost
