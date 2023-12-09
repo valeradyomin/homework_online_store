@@ -16,6 +16,7 @@
         <div class="btn-group">
           <a href="{% url 'blog:list' %}" class="btn btn-sm btn-outline-primary">Назад</a>
           <a href="{% url 'blog:edit' object.pk %}" class="btn btn-sm btn-outline-primary">Редактировать</a>
+          <a href="{% url 'blog:delete' object.pk %}" class="btn btn-sm btn-outline-primary">Удалить</a>
         </div>
 
       </div>
