@@ -9,7 +9,7 @@ from catalog.models import Product
 
 class ProductListView(ListView):
     model = Product
-    template_name = 'catalog/index.html'
+    # template_name = 'catalog/product_list.html'
     extra_context = {
         'title': 'Товары нашего магазина'
     }
@@ -20,7 +20,7 @@ class ProductListView(ListView):
 #         'object_list': Product.objects.all(),
 #         'title': 'Товары нашего магазина'
 #     }
-#     return render(request, 'catalog/index.html', context=context)
+#     return render(request, 'catalog/product_list.html', context=context)
 
 
 def contacts(request):
@@ -38,7 +38,7 @@ def contacts(request):
 
 class ProductDetailView(DetailView):
     model = Product
-    template_name = 'catalog/product.html'
+    # template_name = 'catalog/product_detail.html'
     extra_context = {
         'title': 'Обзор товара'
     }
@@ -51,4 +51,4 @@ class ProductDetailView(DetailView):
 #         'object': product_item,
 #         'title': f'Товар - {product_item.name}'
 #     }
-#     return render(request, 'catalog/product.html', context=context)
+#     return render(request, 'catalog/product_detail.html', context=context)
