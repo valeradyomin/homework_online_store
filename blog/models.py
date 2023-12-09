@@ -19,4 +19,4 @@ class Blogpost(models.Model):
     class Meta:
         verbose_name = 'публикация'
         verbose_name_plural = "публикации"
-        ordering = ("date_create",)
+        ordering = ("-date_create",)
