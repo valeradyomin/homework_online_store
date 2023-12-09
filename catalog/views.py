@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView
 
 from catalog.models import Product
 
@@ -9,6 +10,9 @@ from catalog.models import Product
 class ProductListView(ListView):
     model = Product
     template_name = 'catalog/index.html'
+    extra_context = {
+        'title': 'Товары нашего магазина'
+    }
 
 
 # def index(request):
@@ -35,6 +39,9 @@ def contacts(request):
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product.html'
+    extra_context = {
+        'title': 'Обзор товара'
+    }
 
 
 # def product(request, pk):
