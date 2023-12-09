@@ -1,16 +1,23 @@
 {% extends 'catalog/base.html' %}
 
+{% load my_tags %}
 {% block content %}
 <div class="card mb-3" style="max-width: 100%;">
   <div class="row g-0">
     <div class="col-md-4">
-      <img src="..." class="img-fluid rounded-start" alt="...">
+      <img src="{% media_tag object.preview %}" class="img-fluid rounded-start" alt="Image">
     </div>
     <div class="col-md-8">
       <div class="card-body">
-        <h5 class="card-title">{{ object.title }}</h5>
+        <h4 class="card-title">{{ object.title }}</h4>
         <p class="card-text">{{ object.content }}</p>
         <p class="card-text"><small class="text-body-secondary">{{ object.date_create }}</small></p>
+
+        <div class="btn-group">
+          <a href="{% url 'blog:list' %}" class="btn btn-sm btn-outline-primary">Назад</a>
+          <a href="{% url 'blog:edit' object.pk %}" class="btn btn-sm btn-outline-primary">Редактировать</a>
+        </div>
+
       </div>
     </div>
   </div>
