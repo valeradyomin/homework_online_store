@@ -9,10 +9,10 @@
 
 <div class="list-group">
 {% for object in object_list %}
-  <a href="#" class="list-group-item list-group-item-action">
+  <a href="{% url 'blog:view' object.pk %}" class="list-group-item list-group-item-action">
     <div class="d-flex w-100 justify-content-between">
       <h5 class="mb-1">{{ object.title | title }}</h5>
-      <small class="text-body-secondary">3 days ago</small>
+      <small class="text-body-secondary">{{ object.date_create }}</small>
     </div>
     <p class="mb-1">{{ object.content | truncatechars:111 }}</p>
     <small class="text-body-secondary">And some muted small print.</small>
