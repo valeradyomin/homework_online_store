@@ -1,16 +1,26 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView
 
 from catalog.models import Product
 
 
 # Create your views here.
 
-def index(request):
-    context = {
-        'object_list': Product.objects.all(),
+class ProductListView(ListView):
+    model = Product
+    # template_name = 'catalog/product_list.html'
+    extra_context = {
         'title': 'Товары нашего магазина'
     }
-    return render(request, 'catalog/index.html', context=context)
+
+
+# def index(request):
+#     context = {
+#         'object_list': Product.objects.all(),
+#         'title': 'Товары нашего магазина'
+#     }
+#     return render(request, 'catalog/product_list.html', context=context)
 
 
 def contacts(request):
@@ -26,11 +36,19 @@ def contacts(request):
     return render(request, 'catalog/contacts.html', context=context)
 
 
-def product(request, pk):
-    product_item = Product.objects.get(id=pk)
-
-    context = {
-        'object': product_item,
-        'title': f'Товар - {product_item.name}'
+class ProductDetailView(DetailView):
+    model = Product
+    # template_name = 'catalog/product_detail.html'
+    extra_context = {
+        'title': 'Обзор товара'
     }
-    return render(request, 'catalog/product.html', context=context)
+
+
+# def product(request, pk):
+#     product_item = Product.objects.get(id=pk)
+#
+#     context = {
+#         'object': product_item,
+#         'title': f'Товар - {product_item.name}'
+#     }
+#     return render(request, 'catalog/product_detail.html', context=context)
