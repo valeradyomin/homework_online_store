@@ -16,6 +16,12 @@ class ProductListView(ListView):
         'title': 'Товары нашего магазина'
     }
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        active_version = Version.objects.filter(is_active=True).first()
+        context['active_version'] = active_version
+        return context
+
 
 # def index(request):
 #     context = {

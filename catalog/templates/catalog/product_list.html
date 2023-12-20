@@ -21,6 +21,11 @@
         <p class="card-text">{{ object.description | truncatechars:100 }}</p>
 
         <a href="{% url 'catalog:product' object.pk %}" class="btn btn-primary">подробности</a>
+
+          {% if active_version %}
+          - Активная версия: {{ active_version.version_number }} - {{ active_version.version_name }}
+          {% endif %}
+
       </div>
     </div>
   </div>
