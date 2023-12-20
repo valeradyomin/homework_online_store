@@ -52,3 +52,7 @@ class ProductDetailView(DetailView):
 #         'title': f'Товар - {product_item.name}'
 #     }
 #     return render(request, 'catalog/product_detail.html', context=context)
+
+
+class ProductCreateView(CreateView):
+    model = Product
