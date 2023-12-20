@@ -1,6 +1,6 @@
 from django.forms import inlineformset_factory
 from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from catalog.forms import ProductForm, VersionForm
@@ -17,10 +17,11 @@ class ProductListView(ListView):
     }
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        active_version = Version.objects.filter(is_active=True).first()
-        context['active_version'] = active_version
-        return context
+        context_data = super().get_context_data(*args, **kwargs)
+        products = Product.objects.all()
+        active_versions = Version.objects.filter(is_active=True, product__in=products)
+        context_data['active_versions'] = active_versions
+        return context_data
 
 
 # def index(request):
@@ -75,11 +76,13 @@ class ProductCreateView(CreateView):
 class ProductVersionUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
-    success_url = reverse_lazy('catalog:product')
 
     extra_context = {
         'title': 'Изменение товара'
     }
+
+    def get_success_url(self):
+        return reverse('catalog:index')
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

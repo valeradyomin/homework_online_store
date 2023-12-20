@@ -4,31 +4,35 @@
 
 {% block content %}
 <h1 class="display-4" style="text-align: center;">Товары</h1>
-        <div class="container">
-            <a href="{% url 'catalog:product_create' %}" class="btn btn-primary mb-5">Добавить товар</a>
-        </div>
+<div class="container">
+    <a href="{% url 'catalog:product_create' %}" class="btn btn-primary mb-5">Добавить товар</a>
+</div>
 <div class="card mb-3" style="max-width: 100%;">
-{% for object in object_list %}
-  <div class="row g-0">
-    <div class="col-md-4">
-<!--      <img src="/media/{{ object.image }}" class="img-fluid rounded-start" alt="...">-->
-<!--      <img src="{{ object.image | media_path }}" class="img-fluid rounded-start" alt="...">-->
-      <img src="{% media_tag object.image %}" class="img-fluid rounded-start" alt="Image">
+    {% for object in object_list %}
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img src="{% media_tag object.image %}" class="img-fluid rounded-start" alt="Image">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h2 class="card-title">{{ object.name | title }}</h2>
+                <p class="card-text">{{ object.description | truncatechars:100 }}</p>
+
+                <a href="{% url 'catalog:product' object.pk %}" class="btn btn-primary">подробности</a>
+
+
+                {% for version in active_versions %}
+                    {% if version.product_id == object.pk %}
+
+                        <p style="font-weight: bold; color: red;">Активная версия:
+                            {{ version.version_number }} - {{ version.version_name }}</p>
+
+                    {% endif %}
+                {% endfor %}
+
+            </div>
+        </div>
     </div>
-    <div class="col-md-8">
-      <div class="card-body">
-        <h2 class="card-title">{{ object.name | title }}</h2>
-        <p class="card-text">{{ object.description | truncatechars:100 }}</p>
-
-        <a href="{% url 'catalog:product' object.pk %}" class="btn btn-primary">подробности</a>
-
-          {% if active_version %}
-          - Активная версия: {{ active_version.version_number }} - {{ active_version.version_name }}
-          {% endif %}
-
-      </div>
-    </div>
-  </div>
-{% endfor %}
+    {% endfor %}
 </div>
 {% endblock %}
