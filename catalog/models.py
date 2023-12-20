@@ -45,3 +45,9 @@ class Version(models.Model):
     version_name = models.CharField(max_length=150, verbose_name='название версии', **NULLABLE)
     is_active = models.BooleanField(verbose_name='активная версия')
 
+    def __str__(self):
+        return f'{self.version_number} - {self.version_name}: {self.is_active}'
+
+    class Meta:
+        verbose_name = 'версия'
+        verbose_name_plural = 'версии'
