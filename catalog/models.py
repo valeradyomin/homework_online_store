@@ -13,7 +13,7 @@ class Category(models.Model):
             cursor.execute(f'TRUNCATE TABLE {cls._meta.db_table} RESTART IDENTITY CASCADE')
 
     def __str__(self):
-        return f'{self.name} - {self.description}'
+        return f'{self.name}'
 
     class Meta:
         verbose_name = "категория"

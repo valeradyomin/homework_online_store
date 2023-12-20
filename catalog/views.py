@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 
+from catalog.forms import ProductForm
 from catalog.models import Product
 
 
@@ -56,3 +57,9 @@ class ProductDetailView(DetailView):
 
 class ProductCreateView(CreateView):
     model = Product
+    form_class = ProductForm
+    success_url = reverse_lazy('catalog:index')
+
+    extra_context = {
+        'title': 'Добавление товара'
+    }
