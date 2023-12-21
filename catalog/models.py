@@ -45,7 +45,7 @@ class Version(models.Model):
     version_name = models.CharField(max_length=150, verbose_name='название версии', **NULLABLE)
     is_active = models.BooleanField(verbose_name='активная версия', **NULLABLE)
 
-    # перепределяем сейв метод для установки единственной is_active версии (*)
+    # переопределяем сейв метод для установки единственной is_active версии (*)
     def save(self, *args, **kwargs):
         if self.is_active:
             Version.objects.filter(product=self.product).exclude(pk=self.pk).update(is_active=False)
