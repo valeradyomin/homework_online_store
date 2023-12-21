@@ -51,6 +51,7 @@ class ProductDetailView(DetailView):
     extra_context = {
         'title': 'Обзор товара'
     }
+
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
         products = Product.objects.all()
