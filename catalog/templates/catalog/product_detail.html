@@ -29,6 +29,14 @@
         <div class="container">
             <a href="{% url 'catalog:product_update' object.pk %}" class="btn btn-primary">Изменить товар</a>
             <a href="{% url 'catalog:index' %}" class="btn btn-primary">Назад к списку</a>
+
+            {% for version in active_versions %}
+            {% if version.product_id == object.pk %}
+            <p style="font-weight: bold; color: red;">Активная версия:
+                {{ version.version_number }} - {{ version.version_name }}</p>
+            {% endif %}
+            {% endfor %}
+
         </div>
     </div>
 </footer>
