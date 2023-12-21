@@ -13,7 +13,7 @@ class Category(models.Model):
             cursor.execute(f'TRUNCATE TABLE {cls._meta.db_table} RESTART IDENTITY CASCADE')
 
     def __str__(self):
-        return f'{self.name} - {self.description}'
+        return f'{self.name}'
 
     class Meta:
         verbose_name = "категория"
@@ -37,3 +37,23 @@ class Product(models.Model):
         verbose_name = "продукт"
         verbose_name_plural = "продукты"
         ordering = ("name",)
+
+
+class Version(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='продукт')
+    version_number = models.PositiveSmallIntegerField(verbose_name='номер версии')
+    version_name = models.CharField(max_length=150, verbose_name='название версии', **NULLABLE)
+    is_active = models.BooleanField(verbose_name='активная версия', **NULLABLE)
+
+    # переопределяем сейв метод для установки единственной is_active версии (*)
+    def save(self, *args, **kwargs):
+        if self.is_active:
+            Version.objects.filter(product=self.product).exclude(pk=self.pk).update(is_active=False)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.version_number} - {self.version_name}: {self.is_active}'
+
+    class Meta:
+        verbose_name = 'версия'
+        verbose_name_plural = 'версии'
