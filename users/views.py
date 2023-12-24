@@ -4,9 +4,9 @@ from django.shortcuts import render
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 
-from users.forms import UserRegisterForm, LoginViewForm
+from users.forms import UserRegisterForm, LoginViewForm, UserForm
 from users.models import User
 
 
@@ -45,3 +45,14 @@ class RegisterView(CreateView):
         )
         return super().form_valid(form)
 
+
+class UserUpdateView(UpdateView):
+    model = User
+    form_class = UserForm
+    success_url = reverse_lazy('users:profile')
+    extra_context = {
+        'title': 'Редактирование профиля'
+    }
+
+    def get_object(self, queryset=None):
+        return self.request.user
