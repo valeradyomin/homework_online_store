@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.urls import reverse_lazy, reverse
+from django.views import View
 from django.views.generic import CreateView, UpdateView
 
 from users.forms import UserRegisterForm, LoginViewForm, UserForm
@@ -30,21 +31,41 @@ class LogoutView(BaseLogoutView):
 class RegisterView(CreateView):
     model = User
     form_class = UserRegisterForm
-    success_url = reverse_lazy('users:login')
+    success_url = reverse_lazy('users:verification_code')
     template_name = 'users/register.html'
     extra_context = {
         'title': 'Регистрация пользователя'
     }
 
     def form_valid(self, form):
-        new_user = form.save()
+        password = User.objects.make_random_password()
+        new_user = form.save(commit=False)
+        new_user.verification_code = password
+        new_user.save()
         send_mail(
-            subject='Поздравляем с регистрацией на сайте Skystore!',
-            message='Вы успешно зарегистрировались на нашей платформе.',
+            recipient_list=[new_user.email],
+            subject='Регистрация на сайте Skystore',
+            message=f'Введите код из для подтверждения регистрации: {new_user.verification_code}',
             from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[new_user.email]
         )
         return super().form_valid(form)
+
+
+class VerificationCodeView(View):
+    model = User
+    template_name = 'users/verification_code.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    @staticmethod
+    def post(request):
+        verification_code = request.POST.get('verification_code')
+        user = User.objects.filter(verification_code=verification_code).first()
+
+        if user is not None and user.verification_code == verification_code:
+            user.save()
+            return redirect(reverse('users:login'))
 
 
 class UserUpdateView(UpdateView):
