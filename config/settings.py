@@ -144,3 +144,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+
+e_host = os.getenv('EMAIL_HOST')
+e_user = os.getenv('EMAIL_HOST_USER')
+e_pass = os.getenv('EMAIL_HOST_PASSWORD')
+
+EMAIL_HOST = e_host
+EMAIL_PORT = 465
+EMAIL_HOST_USER = e_user
+EMAIL_HOST_PASSWORD = e_pass
+EMAIL_USE_SSL = True

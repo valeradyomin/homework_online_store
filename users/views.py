@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.core.mail import send_mail
 from django.shortcuts import render
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
@@ -32,4 +34,14 @@ class RegisterView(CreateView):
     extra_context = {
         'title': 'Регистрация пользователя'
     }
+
+    def form_valid(self, form):
+        new_user = form.save()
+        send_mail(
+            subject='Поздравляем с регистрацией на сайте Skystore!',
+            message='Вы успешно зарегистрировались на нашей платформе.',
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[new_user.email]
+        )
+        return super().form_valid(form)
 
