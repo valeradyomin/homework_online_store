@@ -1,3 +1,5 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
@@ -8,6 +10,11 @@ from catalog.models import Product, Version
 
 
 # Create your views here.
+
+class MyLoginRequiredMixin(LoginRequiredMixin):
+    def handle_no_permission(self):
+        return redirect(reverse('catalog:permission_denied'))
+
 
 class ProductListView(ListView):
     model = Product
@@ -69,7 +76,6 @@ class ProductDetailView(DetailView):
 #     }
 #     return render(request, 'catalog/product_detail.html', context=context)
 
-
 class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
@@ -87,7 +93,7 @@ class ProductCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ProductVersionUpdateView(UpdateView):
+class ProductVersionUpdateView(MyLoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
 
@@ -109,6 +115,12 @@ class ProductVersionUpdateView(UpdateView):
         context_data['formset'] = formset
         return context_data
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not self.object.can_edit(request.user):
+            return redirect('catalog:permission_denied')
+        return super().get(request, *args, **kwargs)
+
     def form_valid(self, form):
         context_data = self.get_context_data()
         formset = context_data['formset']
@@ -119,3 +131,10 @@ class ProductVersionUpdateView(UpdateView):
             formset.save()
 
         return super().form_valid(form)
+
+
+def custom_permission_denied(request):
+    context = {
+        'reason': 'У вас нет прав на редактирование этой записи.'
+    }
+    return render(request, 'catalog/permission_denied.html', context=context)
