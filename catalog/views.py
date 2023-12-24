@@ -8,6 +8,8 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from catalog.forms import ProductForm, VersionForm
 from catalog.models import Product, Version
 
+from django.shortcuts import get_object_or_404
+
 
 # Create your views here.
 
@@ -118,7 +120,7 @@ class ProductVersionUpdateView(MyLoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if not self.object.can_edit(request.user):
-            return redirect('catalog:permission_denied')
+            return custom_permission_denied(request, pk=self.object.pk)
         return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -133,8 +135,14 @@ class ProductVersionUpdateView(MyLoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-def custom_permission_denied(request):
+def custom_permission_denied(request, pk=None):
+    owner_email = "нет владельца"
+    if pk:
+        product = get_object_or_404(Product, pk=pk)
+        owner_email = product.owner.email if product.owner else "нет владельца"
     context = {
-        'reason': 'У вас нет прав на редактирование этой записи.'
+        'title': 'Упс... что то пошло не так',
+        'reason': 'У вас нет прав на редактирование этой записи.',
+        'owner_email': owner_email
     }
     return render(request, 'catalog/permission_denied.html', context=context)
