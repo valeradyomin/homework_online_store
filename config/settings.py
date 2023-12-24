@@ -77,14 +77,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-secret = os.getenv("DB_PASS")
+db_pass = os.getenv("DB_PASS")
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'online_store',  # Название БД
         'USER': 'postgres',  # Пользователь для подключения
-        'PASSWORD': secret,  # Пароль для этого пользователя
+        'PASSWORD': db_pass,  # Пароль для этого пользователя
         'HOST': '127.0.0.1',  # Адрес, на котором развернут сервер БД
         'PORT': 5432,  # Порт, на котором работает сервер БД
     }
