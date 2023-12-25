@@ -1,13 +1,22 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from catalog.forms import ProductForm, VersionForm
 from catalog.models import Product, Version
 
+from django.shortcuts import get_object_or_404
+
 
 # Create your views here.
+
+class MyLoginRequiredMixin(LoginRequiredMixin):
+    def handle_no_permission(self):
+        return redirect(reverse('catalog:permission_denied'))
+
 
 class ProductListView(ListView):
     model = Product
@@ -69,8 +78,7 @@ class ProductDetailView(DetailView):
 #     }
 #     return render(request, 'catalog/product_detail.html', context=context)
 
-
-class ProductCreateView(CreateView):
+class ProductCreateView(MyLoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:index')
@@ -79,8 +87,15 @@ class ProductCreateView(CreateView):
         'title': 'Добавление товара'
     }
 
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.owner = self.request.user
+        self.object.save()
 
-class ProductVersionUpdateView(UpdateView):
+        return super().form_valid(form)
+
+
+class ProductVersionUpdateView(MyLoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
 
@@ -102,6 +117,12 @@ class ProductVersionUpdateView(UpdateView):
         context_data['formset'] = formset
         return context_data
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not self.object.can_edit(request.user):
+            return custom_permission_denied(request, pk=self.object.pk)
+        return super().get(request, *args, **kwargs)
+
     def form_valid(self, form):
         context_data = self.get_context_data()
         formset = context_data['formset']
@@ -112,3 +133,30 @@ class ProductVersionUpdateView(UpdateView):
             formset.save()
 
         return super().form_valid(form)
+
+
+def custom_permission_denied(request, pk=None):
+    owner_email = "нет владельца"
+    if pk:
+        product = get_object_or_404(Product, pk=pk)
+        owner_email = product.owner.email if product.owner else "нет владельца"
+    context = {
+        'title': 'Упс... что то пошло не так',
+        'reason': 'Вы не зарегистрированы либо не являетесь владельцем этого товара.',
+        'owner_email': owner_email
+    }
+    return render(request, 'catalog/permission_denied.html', context=context)
+
+
+class ProductDeleteView(MyLoginRequiredMixin, DeleteView):
+    model = Product
+    success_url = reverse_lazy('catalog:index')
+    extra_context = {
+        'title': 'Удаление товара',
+    }
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not self.object.can_edit(request.user):
+            return custom_permission_denied(request, pk=self.object.pk)
+        return super().get(request, *args, **kwargs)

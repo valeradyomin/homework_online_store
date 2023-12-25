@@ -17,6 +17,7 @@
         <h2 class="card-title">{{ object.name | title }}</h2>
         <p class="card-text">{{ object.description }}</p>
         <p class="card-text"><small class="text-body-secondary">дата публикации: {{ object.time_create }}</small></p>
+        <p class="card-text"><small class="text-body-secondary">владелец: {{ object.owner|default:"нет владельца" }}</small></p>
         <h4 class="my-0 font-weight-normal">Цена {{ object.price }} руб.</h4><br>
         <a href="#" class="btn btn-primary">купить</a>
       </div>
@@ -29,6 +30,7 @@
         <div class="container">
             <a href="{% url 'catalog:product_update' object.pk %}" class="btn btn-primary">Изменить товар</a>
             <a href="{% url 'catalog:index' %}" class="btn btn-primary">Назад к списку</a>
+            <a href="{% url 'catalog:product_delete' object.pk %}" type="button" class="btn btn-danger">Удалить</a>
 
             {% for version in active_versions %}
             {% if version.product_id == object.pk %}

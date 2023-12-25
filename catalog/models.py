@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models, connection
 
 NULLABLE = {"null": True, "blank": True}
@@ -22,6 +23,7 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='владелец', **NULLABLE)
     name = models.CharField(max_length=100, verbose_name='наименование продукта')
     description = models.TextField(verbose_name='описание продукта')
     image = models.ImageField(upload_to='products/', verbose_name='изображение', **NULLABLE)
@@ -37,6 +39,9 @@ class Product(models.Model):
         verbose_name = "продукт"
         verbose_name_plural = "продукты"
         ordering = ("name",)
+
+    def can_edit(self, user):
+        return self.owner == user
 
 
 class Version(models.Model):

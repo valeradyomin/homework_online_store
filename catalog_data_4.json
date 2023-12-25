@@ -1,0 +1,173 @@
+[
+  {
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+      "name": "фрукт",
+      "description": "сочный съедобный плод растения"
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+      "name": "смартфон",
+      "description": "мобильный телефон, дополненный функциональностью умного устройства"
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 3,
+    "fields": {
+      "name": "автомобиль",
+      "description": "транспортное средство на колесном ходу с собственным двигателем"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+      "name": "яблоко",
+      "description": "сладкое и полезное",
+      "image": "",
+      "category": 1,
+      "price": 100,
+      "time_create": "2023-12-02T10:35:00.569Z",
+      "time_update": "2023-12-02T10:35:00.569Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+      "name": "груша",
+      "description": "вкусная и сочная",
+      "image": "products/fruit_01.jpg",
+      "category": 1,
+      "price": 150,
+      "time_create": "2023-12-02T10:35:00.569Z",
+      "time_update": "2023-12-03T21:32:40.128Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+      "name": "слива",
+      "description": "спелая и нежная",
+      "image": "products/fruit_02.jpg",
+      "category": 1,
+      "price": 200,
+      "time_create": "2023-12-02T10:35:00.569Z",
+      "time_update": "2023-12-03T21:32:54.737Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 4,
+    "fields": {
+      "name": "Asus Zenfone 10 8 256Gb NFC Midnight Black",
+      "description": "вырез на экране, сенсорный экран, устойчивое к царапинам стекло, цветной экран",
+      "image": "products/phone_02.jpg",
+      "category": 2,
+      "price": 65000,
+      "time_create": "2023-12-02T10:35:00.569Z",
+      "time_update": "2023-12-03T21:30:17.500Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 5,
+    "fields": {
+      "name": "BlackBerry KEY2 64GB 2SIM",
+      "description": "диагональ экрана: 4.50, количество основных камер: 2, память: 128 ГБ, 64 ГБ, оперативная память: 6 ГБ, емкость аккумулятора: 3500 мАч, разрешение экрана: 16201080, 4G LTE, слот для карты памяти",
+      "image": "products/phone_03.jpg",
+      "category": 2,
+      "price": 85000,
+      "time_create": "2023-12-02T10:35:00.569Z",
+      "time_update": "2023-12-20T19:49:50.128Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 6,
+    "fields": {
+      "name": "Apple iPhone 15 128 ГБ, Dual nano SIM",
+      "description": "является воплощением инноваций, стиля и функциональности. С его появлением вы сможете наслаждаться яркими и насыщенными цветами на 6,1-дюймовом OLED-дисплее Super Retina XDR, который обеспечивает невероятное качество изображения даже при ярком солнечном свете",
+      "image": "products/phone_01.jpg",
+      "category": 2,
+      "price": 110000,
+      "time_create": "2023-12-02T10:35:00.569Z",
+      "time_update": "2023-12-03T21:27:39.701Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 7,
+    "fields": {
+      "name": "Subaru Outback",
+      "description": "Управляемость и проходимость на высшем уровне. Мультируль. Адаптивный круизконтроль. Большой багажник. Люк.",
+      "image": "products/car_01.jpg",
+      "category": 3,
+      "price": 3800000,
+      "time_create": "2023-12-02T10:35:00.569Z",
+      "time_update": "2023-12-03T21:31:15.633Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 8,
+    "fields": {
+      "name": "Toyota Land Cruiser",
+      "description": "Автомобиль в идеальном состоянии. Один владелец. ПТС оригинал. Без окрасов. Хорошая комплектация: кожаный салон, электропривод водительского сиденья, электропривод багажника, камера заднего вида.",
+      "image": "products/car_02.jpg",
+      "category": 3,
+      "price": 10945000,
+      "time_create": "2023-12-02T10:35:00.569Z",
+      "time_update": "2023-12-03T21:31:35.341Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 9,
+    "fields": {
+      "name": "Volkswagen Touareg",
+      "description": "Максимальная комплектация: пневмоподвеска, электропривод крышки багажника, передних сидений, память положения передних сидений, 2х зонный климат контроль, датчик света и дождя.",
+      "image": "products/car_03.jpg",
+      "category": 3,
+      "price": 4045000,
+      "time_create": "2023-12-02T10:35:00.569Z",
+      "time_update": "2023-12-03T21:32:16.035Z"
+    }
+  },
+  {
+    "model": "catalog.version",
+    "pk": 1,
+    "fields": {
+      "product": 3,
+      "version_number": 1,
+      "version_name": "синяя",
+      "is_active": false
+    }
+  },
+  {
+    "model": "catalog.version",
+    "pk": 2,
+    "fields": {
+      "product": 3,
+      "version_number": 2,
+      "version_name": "красная",
+      "is_active": true
+    }
+  },
+  {
+    "model": "catalog.version",
+    "pk": 3,
+    "fields": {
+      "product": 5,
+      "version_number": 1,
+      "version_name": "б/у",
+      "is_active": true
+    }
+  }
+]

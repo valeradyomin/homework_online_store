@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     'catalog',
     'blog',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -76,14 +77,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-secret = os.getenv("DB_PASS")
+db_pass = os.getenv("DB_PASS")
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'online_store',  # Название БД
         'USER': 'postgres',  # Пользователь для подключения
-        'PASSWORD': secret,  # Пароль для этого пользователя
+        'PASSWORD': db_pass,  # Пароль для этого пользователя
         'HOST': '127.0.0.1',  # Адрес, на котором развернут сервер БД
         'PORT': 5432,  # Порт, на котором работает сервер БД
     }
@@ -110,9 +111,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -137,3 +140,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+AUTH_USER_MODEL = 'users.User'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+
+e_host = os.getenv('EMAIL_HOST')
+e_user = os.getenv('EMAIL_HOST_USER')
+e_pass = os.getenv('EMAIL_HOST_PASSWORD')
+
+EMAIL_HOST = e_host
+EMAIL_PORT = 465
+EMAIL_HOST_USER = e_user
+EMAIL_HOST_PASSWORD = e_pass
+EMAIL_USE_SSL = True
