@@ -28,9 +28,14 @@
 <footer class="text-muted">
     <div class="container">
         <div class="container">
-            <a href="{% url 'catalog:product_update' object.pk %}" class="btn btn-primary">Изменить товар</a>
-            <a href="{% url 'catalog:index' %}" class="btn btn-primary">Назад к списку</a>
+            {% if object.owner == request.user or user.is_superuser or user.is_staff %}
+            {% if perms.catalog.delete_product %}
             <a href="{% url 'catalog:product_delete' object.pk %}" type="button" class="btn btn-danger">Удалить</a>
+            {% endif %}
+            {% if perms.catalog.change_product %}
+            <a href="{% url 'catalog:product_update' object.pk %}" class="btn btn-primary">Изменить товар</a>
+            {% endif %}
+            <a href="{% url 'catalog:index' %}" class="btn btn-primary">Назад к списку</a>
 
             {% for version in active_versions %}
             {% if version.product_id == object.pk %}
@@ -38,7 +43,7 @@
                 {{ version.version_number }} - {{ version.version_name }}</p>
             {% endif %}
             {% endfor %}
-
+            {% endif %}
         </div>
     </div>
 </footer>

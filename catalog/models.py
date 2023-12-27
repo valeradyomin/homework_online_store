@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db import models, connection
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 
 NULLABLE = {"null": True, "blank": True}
 
@@ -31,6 +33,7 @@ class Product(models.Model):
     price = models.IntegerField(verbose_name='цена')
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='дата публикации')
     time_update = models.DateTimeField(auto_now=True, verbose_name='дата изменения')
+    is_published = models.BooleanField(default=True, verbose_name='опубликовано')
 
     def __str__(self):
         return f'{self.name}'
