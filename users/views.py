@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
+from django.contrib.auth.models import Group
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import CreateView, UpdateView
@@ -48,6 +49,10 @@ class RegisterView(CreateView):
             message=f'Введите код из для подтверждения регистрации: {new_user.verification_code}',
             from_email=settings.EMAIL_HOST_USER,
         )
+
+        client_group = Group.objects.get(name='Клиент')
+        client_group.user_set.add(new_user)
+
         return super().form_valid(form)
 
 

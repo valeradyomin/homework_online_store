@@ -1,11 +1,11 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, ModeratorForm
 from catalog.models import Product, Version
 
 from django.shortcuts import get_object_or_404
@@ -18,12 +18,19 @@ class MyLoginRequiredMixin(LoginRequiredMixin):
         return redirect(reverse('catalog:permission_denied'))
 
 
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
+    login_url = 'users:login'
     # template_name = 'catalog/product_list.html'
     extra_context = {
         'title': 'Товары нашего магазина'
     }
+
+    def get_queryset(self):
+        if self.request.user.is_superuser or self.request.user.is_staff:
+            return Product.objects.all()
+        else:
+            return Product.objects.filter(is_published=True)
 
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
@@ -54,12 +61,13 @@ def contacts(request):
     return render(request, 'catalog/contacts.html', context=context)
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Product
     # template_name = 'catalog/product_detail.html'
     extra_context = {
         'title': 'Обзор товара'
     }
+    permission_required = 'catalog.view_product'
 
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
@@ -78,10 +86,13 @@ class ProductDetailView(DetailView):
 #     }
 #     return render(request, 'catalog/product_detail.html', context=context)
 
-class ProductCreateView(MyLoginRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:index')
+    login_url = 'users:login'
+
+    permission_required = 'catalog.add_product'
 
     extra_context = {
         'title': 'Добавление товара'
@@ -95,13 +106,21 @@ class ProductCreateView(MyLoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProductVersionUpdateView(MyLoginRequiredMixin, UpdateView):
+class ProductVersionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
-    form_class = ProductForm
+    # form_class = ProductForm
+    login_url = 'users:login'
+    permission_required = 'catalog.change_product'
 
     extra_context = {
         'title': 'Изменение товара'
     }
+
+    def get_form_class(self):
+        if self.request.user.is_staff:
+            return ModeratorForm
+        else:
+            return ProductForm
 
     def get_success_url(self):
         return reverse('catalog:index')
@@ -117,11 +136,17 @@ class ProductVersionUpdateView(MyLoginRequiredMixin, UpdateView):
         context_data['formset'] = formset
         return context_data
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if not self.object.can_edit(request.user):
-            return custom_permission_denied(request, pk=self.object.pk)
-        return super().get(request, *args, **kwargs)
+    # def get(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     if not self.object.can_edit(request.user):
+    #         return custom_permission_denied(request, pk=self.object.pk)
+    #     return super().get(request, *args, **kwargs)
+    #
+    # def post(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     if not self.object.can_edit(request.user):
+    #         return custom_permission_denied(request, pk=self.object.pk)
+    #     return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         context_data = self.get_context_data()
@@ -148,15 +173,15 @@ def custom_permission_denied(request, pk=None):
     return render(request, 'catalog/permission_denied.html', context=context)
 
 
-class ProductDeleteView(MyLoginRequiredMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:index')
     extra_context = {
         'title': 'Удаление товара',
     }
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if not self.object.can_edit(request.user):
-            return custom_permission_denied(request, pk=self.object.pk)
-        return super().get(request, *args, **kwargs)
+    # def get(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     if not self.object.can_edit(request.user):
+    #         return custom_permission_denied(request, pk=self.object.pk)
+    #     return super().get(request, *args, **kwargs)

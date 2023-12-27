@@ -5,10 +5,13 @@
 {% block content %}
 <h1 class="display-4" style="text-align: center;">Товары</h1>
 <div class="container">
+    {% if perms.catalog.add_product %}
     <a href="{% url 'catalog:product_create' %}" class="btn btn-primary mb-5">Добавить товар</a>
+    {% endif %}
 </div>
 <div class="card mb-3" style="max-width: 100%;">
     {% for object in object_list %}
+    {% if object.is_published %}
     <div class="row g-0">
         <div class="col-md-4">
             <img src="{% media_tag object.image %}" class="img-fluid rounded-start" alt="Image">
@@ -23,17 +26,29 @@
     <footer class="text-muted">
         <div class="container">
             <div class="container mt-4 mb-4">
+
+                {% if object.owner == request.user or user.is_superuser or user.is_staff %}
+                {% if perms.catalog.view_product %}
                 <a href="{% url 'catalog:product' object.pk %}" class="btn btn-primary">Подробности</a>
+                {% endif %}
+
+                {% if perms.catalog.change_product %}
                 <a href="{% url 'catalog:product_update' object.pk %}" class="btn btn-primary">Изменить товар</a>
+                {% endif %}
+
                 {% for version in active_versions %}
                         {% if version.product_id == object.pk %}
                             <p style="font-weight: bold; color: red;">Активная версия:
                                 {{ version.version_number }} - {{ version.version_name }}</p>
                         {% endif %}
                     {% endfor %}
+
+                {% endif %}
+
             </div>
         </div>
     </footer>
+    {% endif %}
     {% endfor %}
 </div>
 {% endblock %}
