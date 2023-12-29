@@ -13,10 +13,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -77,16 +79,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-db_pass = os.getenv("DB_PASS")
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'online_store',  # Название БД
-        'USER': 'postgres',  # Пользователь для подключения
-        'PASSWORD': db_pass,  # Пароль для этого пользователя
-        'HOST': '127.0.0.1',  # Адрес, на котором развернут сервер БД
-        'PORT': 5432,  # Порт, на котором работает сервер БД
+        'NAME': os.getenv('DB_NAME'),  # Название БД
+        'USER': os.getenv('DB_USER'),  # Пользователь для подключения
+        'PASSWORD': os.getenv("DB_PASS"),  # Пароль для этого пользователя
+        'HOST': os.getenv('DB_HOST'),  # Адрес, на котором развернут сервер БД
+        'PORT': os.getenv('DB_PORT'),  # Порт, на котором работает сервер БД
     }
 }
 
@@ -146,12 +147,9 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/users/'
 
-e_host = os.getenv('EMAIL_HOST')
-e_user = os.getenv('EMAIL_HOST_USER')
-e_pass = os.getenv('EMAIL_HOST_PASSWORD')
 
-EMAIL_HOST = e_host
-EMAIL_PORT = 465
-EMAIL_HOST_USER = e_user
-EMAIL_HOST_PASSWORD = e_pass
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_SSL = True
