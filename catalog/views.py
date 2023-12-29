@@ -40,14 +40,6 @@ class ProductListView(LoginRequiredMixin, ListView):
         return context_data
 
 
-# def index(request):
-#     context = {
-#         'object_list': Product.objects.all(),
-#         'title': 'Товары нашего магазина'
-#     }
-#     return render(request, 'catalog/product_list.html', context=context)
-
-
 def contacts(request):
     context = {
         'title': 'Наши контакты'
@@ -76,15 +68,6 @@ class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView)
         context_data['active_versions'] = active_versions
         return context_data
 
-
-# def product(request, pk):
-#     product_item = Product.objects.get(id=pk)
-#
-#     context = {
-#         'object': product_item,
-#         'title': f'Товар - {product_item.name}'
-#     }
-#     return render(request, 'catalog/product_detail.html', context=context)
 
 class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Product
@@ -135,18 +118,6 @@ class ProductVersionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Upda
 
         context_data['formset'] = formset
         return context_data
-
-    # def get(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     if not self.object.can_edit(request.user):
-    #         return custom_permission_denied(request, pk=self.object.pk)
-    #     return super().get(request, *args, **kwargs)
-    #
-    # def post(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     if not self.object.can_edit(request.user):
-    #         return custom_permission_denied(request, pk=self.object.pk)
-    #     return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         context_data = self.get_context_data()
