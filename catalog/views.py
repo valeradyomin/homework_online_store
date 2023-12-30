@@ -5,10 +5,12 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from catalog.forms import ProductForm, VersionForm, ModeratorForm
-from catalog.models import Product, Version
+from catalog.forms import ProductForm, VersionForm, ModeratorForm, CategoryForm
+from catalog.models import Product, Version, Category
 
 from django.shortcuts import get_object_or_404
+
+from catalog.services import get_cache_categories
 
 
 # Create your views here.
@@ -156,3 +158,33 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     #     if not self.object.can_edit(request.user):
     #         return custom_permission_denied(request, pk=self.object.pk)
     #     return super().get(request, *args, **kwargs)
+
+
+class CategoryListView(LoginRequiredMixin, ListView):
+    model = Category
+    form_class = CategoryForm
+    login_url = 'users:login'
+    extra_context = {
+        'title': 'Список категорий',
+    }
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        context_data['object_list'] = get_cache_categories()
+
+        return context_data
+
+
+class CategoryProductListView(LoginRequiredMixin, ListView):
+    model = Product
+    template_name = 'catalog/category_product_list.html'  # Замените на ваш шаблон
+    context_object_name = 'product_list'
+
+    def get_queryset(self):
+        category = get_object_or_404(Category, id=self.kwargs['category_id'])
+        return Product.objects.filter(category=category, is_published=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = get_object_or_404(Category, id=self.kwargs['category_id'])
+        return context

@@ -1,0 +1,35 @@
+{% extends 'catalog/base.html' %}
+
+{% load my_tags %}
+
+{% block content %}
+<h1 class="display-4" style="text-align: center;">{{ title }}</h1>
+<div class="container">
+
+</div>
+<div class="card mb-3" style="max-width: 100%;">
+    {% for object in object_list %}
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img src="{% media_tag object.image %}" class="img-fluid rounded-start" alt="Image">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h2 class="card-title">{{ object.name | title }}</h2>
+                <p class="card-text">{{ object.description }}</p>
+            </div>
+        </div>
+    </div>
+    <footer class="text-muted">
+        <div class="container">
+            <div class="container mt-4 mb-4">
+                {% if perms.catalog.add_product %}
+                <a href="{% url 'catalog:product_create' %}" class="btn btn-primary">Добавить товар</a>
+                {% endif %}
+                <a href="{% url 'catalog:category_products' object.pk %}" class="btn btn-primary">Отобразить товары</a>
+            </div>
+        </div>
+    </footer>
+    {% endfor %}
+</div>
+{% endblock %}
