@@ -5,10 +5,12 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from catalog.forms import ProductForm, VersionForm, ModeratorForm
-from catalog.models import Product, Version
+from catalog.forms import ProductForm, VersionForm, ModeratorForm, CategoryForm
+from catalog.models import Product, Version, Category
 
 from django.shortcuts import get_object_or_404
+
+from catalog.services import get_cache_categories
 
 
 # Create your views here.
@@ -40,14 +42,6 @@ class ProductListView(LoginRequiredMixin, ListView):
         return context_data
 
 
-# def index(request):
-#     context = {
-#         'object_list': Product.objects.all(),
-#         'title': 'Товары нашего магазина'
-#     }
-#     return render(request, 'catalog/product_list.html', context=context)
-
-
 def contacts(request):
     context = {
         'title': 'Наши контакты'
@@ -76,15 +70,6 @@ class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView)
         context_data['active_versions'] = active_versions
         return context_data
 
-
-# def product(request, pk):
-#     product_item = Product.objects.get(id=pk)
-#
-#     context = {
-#         'object': product_item,
-#         'title': f'Товар - {product_item.name}'
-#     }
-#     return render(request, 'catalog/product_detail.html', context=context)
 
 class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Product
@@ -136,18 +121,6 @@ class ProductVersionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Upda
         context_data['formset'] = formset
         return context_data
 
-    # def get(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     if not self.object.can_edit(request.user):
-    #         return custom_permission_denied(request, pk=self.object.pk)
-    #     return super().get(request, *args, **kwargs)
-    #
-    # def post(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     if not self.object.can_edit(request.user):
-    #         return custom_permission_denied(request, pk=self.object.pk)
-    #     return super().post(request, *args, **kwargs)
-
     def form_valid(self, form):
         context_data = self.get_context_data()
         formset = context_data['formset']
@@ -185,3 +158,33 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     #     if not self.object.can_edit(request.user):
     #         return custom_permission_denied(request, pk=self.object.pk)
     #     return super().get(request, *args, **kwargs)
+
+
+class CategoryListView(LoginRequiredMixin, ListView):
+    model = Category
+    form_class = CategoryForm
+    login_url = 'users:login'
+    extra_context = {
+        'title': 'Список категорий',
+    }
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        context_data['object_list'] = get_cache_categories()
+
+        return context_data
+
+
+class CategoryProductListView(LoginRequiredMixin, ListView):
+    model = Product
+    template_name = 'catalog/category_product_list.html'  # Замените на ваш шаблон
+    context_object_name = 'product_list'
+
+    def get_queryset(self):
+        category = get_object_or_404(Category, id=self.kwargs['category_id'])
+        return Product.objects.filter(category=category, is_published=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = get_object_or_404(Category, id=self.kwargs['category_id'])
+        return context

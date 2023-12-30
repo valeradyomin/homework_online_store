@@ -1,5 +1,5 @@
 from django import forms
-from catalog.models import Product, Version
+from catalog.models import Product, Version, Category
 
 
 class StyleFormMiXin:
@@ -48,3 +48,9 @@ class ModeratorForm(forms.ModelForm):
         model = Product
         fields = ('description', 'category', 'is_published')
 
+
+class CategoryForm(StyleFormMiXin, forms.ModelForm):
+
+    class Meta:
+        model = Category
+        fields = '__all__'
